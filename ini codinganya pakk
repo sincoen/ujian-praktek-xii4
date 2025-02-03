@@ -1,0 +1,69 @@
+#include <Servo.h>    // untuk mengenali library servo
+
+Servo servo;
+int angle = 50;
+
+// iki pin nggo sensor
+const int trigPin = 12;
+const int echoPin = 11;
+
+const int buzzer = 7;      // Buzzer
+const int ledMerah = 6;    // LED tanah *ABANG*
+const int ledHijau = 5;    // LED *HIJAU* bumiku
+
+// iki nganggo Variabel sensore
+long duration;
+int distance;
+
+void setup() {
+  servo.attach(8);
+  servo.write(angle);
+
+  pinMode(trigPin, OUTPUT);
+  pinMode(echoPin, INPUT);
+  
+  pinMode(buzzer, OUTPUT);
+  pinMode(ledMerah, OUTPUT);
+  pinMode(ledHijau, OUTPUT);
+
+  Serial.begin(9600);
+}
+
+void loop() {    // nggo ngirim sinyal variabele trigger iki
+
+  digitalWrite(trigPin, LOW);
+  delayMicroseconds(5);
+  digitalWrite(trigPin, HIGH);
+  delayMicroseconds(10);
+  digitalWrite(trigPin, LOW);
+
+  duration = pulseIn(echoPin, HIGH);   // nek iki nggo sing nerima sinyal sekang echone
+  distance = duration * 0.034 / 2; // iki rumus jarak ben dadi cm (centi meter)
+
+  Serial.print("Distance: ");
+  Serial.println(distance);
+
+ // iki nembe logika nggo jalan servo led kro buxzzer 
+
+  if (distance < 10) {   // nek iki nembe nggo ngatur jarak si sensore
+
+    servo.write(180);        // ngko servone jarak buka ke 180 derajat bro
+    digitalWrite(buzzer, HIGH);  // njor dilanjut ngko buzzer muni atau menyala
+    digitalWrite(ledMerah, HIGH); // dilanjut kro lampu abang nyala
+    digitalWrite(ledHijau, LOW);  // nek iki lampu ijone mati
+
+  } else {
+
+    servo.write(70);         // ngko servo nutup maning dengan jarak 70 derajat bro
+    digitalWrite(buzzer, LOW);   // njor buzzer mati nek servone mbalik
+    digitalWrite(ledMerah, LOW);  // iki nembe lampu abang sing mati mergane servone mbalik
+    digitalWrite(ledHijau, HIGH); // nembe iki lampu ijone menyala abangkuh uhuyyyyy
+  }
+
+  delay(100); // nek iki nggo nyegah ben ora eror, soale ben ra kebanteren kro ben ra kalonen brow
+}
+
+// Trigger (trigPin)  *Digunakan untuk mengirim gelombang ultrasonik.
+// Echo (echoPin)  *Menerima pantulan gelombang ultrasonik untuk menghitung jarak.
+
+//https://drive.google.com/drive/folders/1oiyDsq0rBo_6-cF2NxUngZDljLKFoTie ini refrensi codingannya
